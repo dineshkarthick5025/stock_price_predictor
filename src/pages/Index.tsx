@@ -98,7 +98,7 @@ const Index = () => {
         <div className="bg-card border border-border rounded-md p-3 mt-4">
           <p className="text-sm font-medium mb-1">SVR Model Implementation Note:</p>
           <p className="text-xs text-muted-foreground">
-            In a production setup, the SVR model would be implemented in Python using scikit-learn with a FastAPI backend. The SVR model could be trained on historical price data with features like moving averages, trading volume, and technical indicators. The React frontend would send requests to the Python backend API endpoints for predictions.
+            by dineshkarthick@28-- In a production setup, the SVR model would be implemented in Python using scikit-learn with a FastAPI backend. The SVR model could be trained on historical price data with features like moving averages, trading volume, and technical indicators. The React frontend would send requests to the Python backend API endpoints for predictions.
           </p>
         </div>
       </div>
