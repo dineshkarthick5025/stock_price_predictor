@@ -148,19 +148,24 @@ const StockChart: React.FC<StockChartProps> = ({ symbol }) => {
   };
   
   return (
-    <Card className="mb-4">
-      <CardHeader className="pb-2">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-          <CardTitle>{symbol ? `${symbol} Stock Chart` : 'Stock Chart'}</CardTitle>
-          <div className="flex flex-wrap gap-2">
-            <ToggleGroup type="single" value={period} onValueChange={(value) => value && setPeriod(value as TimePeriod)}>
-              <ToggleGroupItem value="1D" size="sm">1D</ToggleGroupItem>
-              <ToggleGroupItem value="1W" size="sm">1W</ToggleGroupItem>
-              <ToggleGroupItem value="1M" size="sm">1M</ToggleGroupItem>
-              <ToggleGroupItem value="3M" size="sm">3M</ToggleGroupItem>
-              <ToggleGroupItem value="6M" size="sm">6M</ToggleGroupItem>
-              <ToggleGroupItem value="1Y" size="sm">1Y</ToggleGroupItem>
-              <ToggleGroupItem value="5Y" size="sm">5Y</ToggleGroupItem>
+    <Card className="w-full">
+      <CardHeader>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <CardTitle>Stock Price Chart</CardTitle>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <ToggleGroup
+              type="single"
+              value={period}
+              onValueChange={(value) => value && setPeriod(value as TimePeriod)}
+              className="justify-start"
+            >
+              <ToggleGroupItem value="1D" size="sm" className="px-3">1D</ToggleGroupItem>
+              <ToggleGroupItem value="1W" size="sm" className="px-3">1W</ToggleGroupItem>
+              <ToggleGroupItem value="1M" size="sm" className="px-3">1M</ToggleGroupItem>
+              <ToggleGroupItem value="3M" size="sm" className="px-3">3M</ToggleGroupItem>
+              <ToggleGroupItem value="6M" size="sm" className="px-3">6M</ToggleGroupItem>
+              <ToggleGroupItem value="1Y" size="sm" className="px-3">1Y</ToggleGroupItem>
+              <ToggleGroupItem value="5Y" size="sm" className="px-3">5Y</ToggleGroupItem>
             </ToggleGroup>
             
             {period !== '1D' && (
@@ -168,8 +173,9 @@ const StockChart: React.FC<StockChartProps> = ({ symbol }) => {
                 type="single" 
                 value={showPrediction ? 'on' : 'off'} 
                 onValueChange={(value) => setShowPrediction(value === 'on')}
+                className="justify-start"
               >
-                <ToggleGroupItem value="on" size="sm">Prediction</ToggleGroupItem>
+                <ToggleGroupItem value="on" size="sm" className="px-3">Show Prediction</ToggleGroupItem>
               </ToggleGroup>
             )}
           </div>
@@ -184,43 +190,82 @@ const StockChart: React.FC<StockChartProps> = ({ symbol }) => {
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={400}>
-            <ComposedChart data={chartData()} margin={{ top: 5, right: 5, left: 5, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--finance-grid))" />
+            <ComposedChart 
+              data={chartData()} 
+              margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+            >
+              <defs>
+                <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                </linearGradient>
+                <linearGradient id="predictionGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              
+              <CartesianGrid 
+                strokeDasharray="3 3" 
+                stroke="hsl(var(--muted))" 
+                opacity={0.2}
+              />
+              
               <XAxis 
                 dataKey="date" 
-                tickFormatter={formatDate} 
-                tick={{ fill: 'hsl(var(--finance-label))' }}
-                axisLine={{ stroke: 'hsl(var(--finance-grid))' }}
+                tickFormatter={formatDate}
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                axisLine={{ stroke: 'hsl(var(--muted))' }}
               />
+              
               <YAxis 
                 domain={getDomain()}
                 tickFormatter={(value) => `$${value.toFixed(0)}`}
-                tick={{ fill: 'hsl(var(--finance-label))' }}
-                axisLine={{ stroke: 'hsl(var(--finance-grid))' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))' }}
+                axisLine={{ stroke: 'hsl(var(--muted))' }}
               />
-              <Tooltip content={<CustomTooltip />} />
               
-              <Line
+              <Tooltip 
+                content={<CustomTooltip />}
+                wrapperStyle={{ outline: 'none' }}
+              />
+
+              {/* Historical price line with gradient area */}
+              <Area
                 type="monotone"
                 dataKey="price"
                 stroke="hsl(var(--primary))"
                 strokeWidth={2}
+                fill="url(#priceGradient)"
                 dot={false}
-                activeDot={{ r: 5 }}
-                isAnimationActive={true}
+                activeDot={{ 
+                  r: 6, 
+                  stroke: 'hsl(var(--background))',
+                  strokeWidth: 2,
+                  fill: 'hsl(var(--primary))'
+                }}
               />
               
               {showPrediction && predictionData.length > 0 && (
                 <>
-                  <Line
+                  {/* Prediction line with gradient area */}
+                  <Area
                     type="monotone"
                     dataKey="predictedPrice"
                     stroke="#10b981"
                     strokeWidth={2}
                     strokeDasharray="5 5"
+                    fill="url(#predictionGradient)"
                     dot={false}
-                    isAnimationActive={true}
+                    activeDot={{ 
+                      r: 6, 
+                      stroke: 'hsl(var(--background))',
+                      strokeWidth: 2,
+                      fill: '#10b981'
+                    }}
                   />
+                  
+                  {/* Confidence interval areas */}
                   <Area
                     type="monotone"
                     dataKey="upperBound"
@@ -235,11 +280,18 @@ const StockChart: React.FC<StockChartProps> = ({ symbol }) => {
                     fill="#10b981"
                     fillOpacity={0.1}
                   />
+                  
+                  {/* Today's reference line */}
                   <ReferenceLine
-                    x={historicalData.length > 0 ? historicalData[historicalData.length - 1].date : ''}
+                    x={historicalData[historicalData.length - 1]?.date}
                     stroke="#f59e0b"
                     strokeDasharray="3 3"
-                    label={{ value: 'Today', position: 'top', fill: '#f59e0b' }}
+                    label={{ 
+                      value: 'Today', 
+                      position: 'top', 
+                      fill: '#f59e0b',
+                      fontSize: 12
+                    }}
                   />
                 </>
               )}

@@ -1,9 +1,9 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -36,27 +36,8 @@
     --ring: 196 100% 50%;
 
     --radius: 0.5rem;
-
-    --sidebar-background: 222 47% 9%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 196 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 222 47% 14%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 222 47% 14%;
-    --sidebar-ring: 196 100% 50%;
-
-    /* Finance-specific colors */
-    --finance-up: 142 71% 45%;
-    --finance-down: 0 84% 60%;
-    --finance-grid: 215 20.2% 25%;
-    --finance-label: 215 20.2% 65.1%;
-    --finance-usd: 160 84% 39%;
-    --finance-inr: 27 96% 61%;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
